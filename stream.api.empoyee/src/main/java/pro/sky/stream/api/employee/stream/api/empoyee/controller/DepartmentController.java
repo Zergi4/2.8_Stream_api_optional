@@ -1,9 +1,7 @@
 package pro.sky.stream.api.employee.stream.api.empoyee.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpStatusCodeException;
 import pro.sky.stream.api.employee.stream.api.empoyee.Employee;
 import pro.sky.stream.api.employee.stream.api.empoyee.service.DepartmentService;
 
@@ -11,8 +9,14 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(path = "/department")
+@RequestMapping("/departments")
 public class DepartmentController {
+
+    @ExceptionHandler({HttpStatusCodeException.class})
+    public String handleException(HttpStatusCodeException e) {
+        return "Code: " + e.getStatusCode() + ". Error: " + e.getMessage();
+    }
+
     private final DepartmentService departmentService;
 
     public DepartmentController(DepartmentService departmentService) {

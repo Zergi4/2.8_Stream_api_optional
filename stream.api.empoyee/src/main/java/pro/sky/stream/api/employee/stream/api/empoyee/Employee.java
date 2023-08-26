@@ -3,52 +3,41 @@ package pro.sky.stream.api.employee.stream.api.empoyee;
 import java.util.Objects;
 
 public class Employee {
-    private  String firstName;
-    private String lastName;
-    private int department;
-    private float salary;
 
+    private final String firstName;
+    private final String lastName;
+    private final double salary;
+    private final int departmentId;
 
-    //Конструктор
-
-
-    public Employee(String firstName, String lastName, int department, float salary) {
+    public Employee(String firstName, String lastName, double salary, int departmentId) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.department = department;
         this.salary = salary;
+        this.departmentId = departmentId;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public int getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(int department) {
-        this.department = department;
-    }
-
-    public float getSalary() {
+    public double getSalary() {
         return salary;
     }
 
-    public void setSalary(float salary) {
-        this.salary = salary;
+    public int getDepartmentId() {
+        return departmentId;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 
     @Override
@@ -56,21 +45,11 @@ public class Employee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return department == employee.department && Float.compare(employee.salary, salary) == 0 && Objects.equals(firstName, employee.firstName) && Objects.equals(lastName, employee.lastName);
+        return Objects.equals(firstName, employee.firstName) && Objects.equals(lastName, employee.lastName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, department, salary);
-    }
-
-    @Override
-    public String toString() {
-        return '{'+
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", department=" + department +
-                ", salary=" + salary +
-                '}';
+        return Objects.hash(firstName, lastName);
     }
 }

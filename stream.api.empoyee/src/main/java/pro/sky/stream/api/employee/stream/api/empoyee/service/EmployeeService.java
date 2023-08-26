@@ -6,55 +6,58 @@ import pro.sky.stream.api.employee.stream.api.empoyee.Exception.EmployeeAlreadyA
 import pro.sky.stream.api.employee.stream.api.empoyee.Exception.EmployeeNotFoundException;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
-public class EmployeeService{
-    public static Map<String, Employee> employees = new HashMap<>();
+public class EmployeeService {
 
-    public static String getKey(Employee employee) {
-        return employee.getFirstName() + " " + employee.getLastName();
-    }
+    private final List<Employee> employees = new ArrayList<>();
 
+    private final static int MAX_SIZE = 2;
 
-    public String addEmployee(String firstName, String lastName, int department, float salary) {
-        Employee newEmployee = new Employee(firstName, lastName, department, salary);
-        if (employees.containsKey(getKey(newEmployee))) {
+    public Employee add(String firstName, String lastName, double salary, int departmentId) {
+
+        if (employees.size() >= MAX_SIZE) {
+            throw new EmployeeStorageIsFullException("Массив сотрудников переполнен");
+        }
+
+        Employee newEmployee = new Employee(firstName, lastName, salary, departmentId);
+
+        if (employees.contains(newEmployee)) {
             throw new EmployeeAlreadyAddedException("Такой сотрудник уже есть");
         }
-        employees.put(getKey(newEmployee), newEmployee);
-        return newEmployee.toString();
+
+        employees.add(newEmployee);
+        return newEmployee;
     }
 
-
-    public String deleteEmployee(String firstName, String lastName) {
-        String employeeKey = firstName + " " + lastName;
-        if (employees.containsKey(employeeKey)) {
-            employees.remove(employeeKey);
-            return employeeKey + " удален";
+    public Employee find(String firstName, String lastName, double salary, int departmentId) {
+        Employee employeeForFound = new Employee(firstName, lastName, salary, departmentId);
+        for (Employee e : employees) {
+            if (e.equals(employeeForFound)) {
+                return e;
+            }
         }
-        throw new EmployeeNotFoundException("Сотрудник не найден.");
+
+        throw new EmployeeNotFoundException("Такого сотрудника нет");
     }
 
+    public Employee remove(String firstName, String lastName, double salary, int departmentId) {
+        Employee employeeForRemove = new Employee(firstName, lastName, salary, departmentId);
 
-    public String findEmployee(String firstName, String lastName) {
-        String findKey = firstName + " " + lastName;
-        if (employees.containsKey(findKey)) {
-            return employees.get(findKey).toString();
+        boolean removeResult = employees.remove(employeeForRemove);
+        if (removeResult) {
+            return employeeForRemove;
+        } else {
+            throw new EmployeeNotFoundException("Сотрудник не удален - не был найден в базе");
         }
-        throw new EmployeeNotFoundException("Такой сотрудник не найден");
     }
 
-
-
-    public String printEmployeeList() {
-
-        return employees.toString();
-    }
-
-    public Map<String, Employee> getAll() {
+    public List<Employee> getAll() {
         return employees;
     }
 }
