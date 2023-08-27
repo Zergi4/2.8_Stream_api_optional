@@ -2,6 +2,7 @@ package pro.sky.stream.api.employee.stream.api.empoyee.service;
 
 import org.springframework.stereotype.Service;
 import pro.sky.stream.api.employee.stream.api.empoyee.Employee;
+import pro.sky.stream.api.employee.stream.api.empoyee.Exception.DepartmentNotFoundException;
 import pro.sky.stream.api.employee.stream.api.empoyee.Exception.EmployeeNotFoundException;
 
 import java.util.*;
@@ -19,28 +20,22 @@ public class DepartmentService {
         this.employeeService = employeeService;
     }
 
-    public Double getEmployeeWithMaxSalary(Integer departmentId) {
-  /*      OptionalDouble max = employeeService.getAll().stream().mapToDouble(Double::doubleValue).max();
+    public Double getMaxSalaryByDepId(Integer departmentId) {
 
-        return employeeService.getAll().stream()
+        Employee max = employeeService.getAll().stream()
                 .filter(employee -> employee.getDepartmentId() == departmentId)
-                .map(x -> x.getSalary())
-                .mapToInt(Double::doubleValue).max();
-                .orElseThrow(() -> new EmployeeNotFoundException("Сотрудник с максимальной зарплатой не найден"));*/
-        Double max = employeeService.getAll().stream()
-                .filter(employee -> employee.getDepartmentId() == departmentId)
-                .map(Employee::getSalary)
-                .mapToDouble(Double::doubleValue).max().getAsDouble();
-        return max;
+                .max(Comparator.comparingDouble(Employee::getSalary))
+                .orElseThrow(() -> new EmployeeNotFoundException("Сотрудник с максимальной зарплатой не найден"));
+        return max.getSalary();
     }
 
-    public Double getEmployeeWithMinSalary(Integer departmentId) {
+    public Double getMinSalaryByDepId(Integer departmentId) {
 
-        Double min = employeeService.getAll().stream()
+        Employee min = employeeService.getAll().stream()
                 .filter(employee -> employee.getDepartmentId() == departmentId)
-                .map(Employee::getSalary)
-                .mapToDouble(Double::doubleValue).min().getAsDouble();
-        return min;
+                .min(Comparator.comparingDouble(Employee::getSalary))
+                .orElseThrow(() -> new EmployeeNotFoundException("Сотрудник с минимальной зарплатой не найден"));
+        return min.getSalary();
     }
     public Map<Integer, List<Employee>> getEmployeesByDepartment(Integer departmentId) {
         return employeeService.getAll().stream()

@@ -6,8 +6,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.stream.api.employee.stream.api.empoyee.Employee;
+import pro.sky.stream.api.employee.stream.api.empoyee.Exception.DepartmentNotFoundException;
 import pro.sky.stream.api.employee.stream.api.empoyee.Exception.EmployeeNotFoundException;
-import pro.sky.stream.api.employee.stream.api.empoyee.service.generator.EmployeeGenerator;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,21 +39,21 @@ class DepartmentServiceTest {
         Employee petrFirstDep = getPetrFirstDep();
         Employee ivanFirstDep = getIvanFirstDep();
         Employee ilyaSecondDep = getIlyaSecondDep();
+        Double MaxSalaryFirstDep = petrFirstDep.getSalary();
 
         when(employeeService.getAll()).thenReturn(
                 List.of(petrFirstDep, ivanFirstDep, ilyaSecondDep)
         );
 
         //Начало теста
-      /*  Employee actualEmployeeWithMaxSalary = departmentService.getEmployeeWithMaxSalary(depId);
-        assertEquals(employeeWithMaxSalary, actualEmployeeWithMaxSalary);
-        assertEquals(depId, actualEmployeeWithMaxSalary.getDepartmentId());
+        Double actualMaxSalaryByDep = departmentService.getMaxSalaryByDepId(depId);
+        assertEquals(MaxSalaryFirstDep, actualMaxSalaryByDep);
         assertTrue(petrFirstDep.getSalary() > ivanFirstDep.getSalary());
-        verify(employeeService).getAll();*/
+        verify(employeeService).getAll();
     }
 
     @Test
-    void getEmployeeWithMaxSalary_withEmployeeNotFoundException() {
+    void getMaxSalaryByDep_withEmployeeNotFoundException() {
         //Подготовка входных данных
         int depId = FIRST_DEPARTMENT_ID;
 
@@ -66,7 +66,7 @@ class DepartmentServiceTest {
         //Начало теста
         Exception exception = assertThrows(
                 EmployeeNotFoundException.class,
-                () -> departmentService.getEmployeeWithMaxSalary(depId));
+                () -> departmentService.getMaxSalaryByDepId(depId));
         assertEquals(expectedMessage, exception.getMessage());
         verify(employeeService).getAll();
     }
@@ -77,7 +77,7 @@ class DepartmentServiceTest {
         int depId = FIRST_DEPARTMENT_ID;
 
         //Подготовка ожидаемого результата
-        Employee employeeWithMinSalary = getIvanFirstDep();
+        Double minSalaryFirstDep = getIvanFirstDep().getSalary();
 
         Employee petrFirstDep = getPetrFirstDep();
         Employee ivanFirstDep = getIvanFirstDep();
@@ -88,9 +88,8 @@ class DepartmentServiceTest {
         );
 
         //Начало теста
-        Employee actualEmployeeWithMinSalary = departmentService.getEmployeeWithMinSalary(depId);
-        assertEquals(employeeWithMinSalary, actualEmployeeWithMinSalary);
-        assertEquals(depId, actualEmployeeWithMinSalary.getDepartmentId());
+        Double actualMinSalaryFirstDep = departmentService.getMinSalaryByDepId(depId);
+        assertEquals(minSalaryFirstDep, actualMinSalaryFirstDep);
         assertTrue(petrFirstDep.getSalary() > ivanFirstDep.getSalary());
         verify(employeeService).getAll();
     }
@@ -109,7 +108,7 @@ class DepartmentServiceTest {
         //Начало теста
         Exception exception = assertThrows(
                 EmployeeNotFoundException.class,
-                () -> departmentService.getEmployeeWithMinSalary(depId));
+                () -> departmentService.getMinSalaryByDepId(depId));
         assertEquals(expectedMessage, exception.getMessage());
         verify(employeeService).getAll();
     }
