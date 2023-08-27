@@ -23,9 +23,9 @@ public class DepartmentController {
         this.departmentService = departmentService;
     }
 
-    @GetMapping("/max-salary")
-    public Employee getEmployeeWithMaxSalary(@RequestParam Integer departmentId) {
-        return departmentService.getEmployeeWithMaxSalary(departmentId);
+    @GetMapping("/{id}/salary/max")
+    public Double getEmployeeWithMaxSalary(@PathVariable Integer id) {
+        return departmentService.getEmployeeWithMaxSalary(id);
     }
 
     @GetMapping("/min-salary")

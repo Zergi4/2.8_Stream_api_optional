@@ -4,9 +4,7 @@ import org.springframework.stereotype.Service;
 import pro.sky.stream.api.employee.stream.api.empoyee.Employee;
 import pro.sky.stream.api.employee.stream.api.empoyee.Exception.EmployeeNotFoundException;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -21,12 +19,19 @@ public class DepartmentService {
         this.employeeService = employeeService;
     }
 
-    public Employee getEmployeeWithMaxSalary(Integer departmentId) {
+    public Double getEmployeeWithMaxSalary(Integer departmentId) {
+  /*      OptionalDouble max = employeeService.getAll().stream().mapToDouble(Double::doubleValue).max();
 
         return employeeService.getAll().stream()
                 .filter(employee -> employee.getDepartmentId() == departmentId)
-                .max(Comparator.comparing(Employee::getSalary))
-                .orElseThrow(() -> new EmployeeNotFoundException("Сотрудник с максимальной зарплатой не найден"));
+                .map(x -> x.getSalary())
+                .mapToInt(Double::doubleValue).max();
+                .orElseThrow(() -> new EmployeeNotFoundException("Сотрудник с максимальной зарплатой не найден"));*/
+        Double max = employeeService.getAll().stream()
+                .filter(employee -> employee.getDepartmentId() == departmentId)
+                .map(x -> x.getSalary())
+                .mapToDouble(Double::doubleValue).max().getAsDouble();
+        return max;
     }
 
     public Employee getEmployeeWithMinSalary(Integer departmentId) {
@@ -41,6 +46,7 @@ public class DepartmentService {
                 .filter(e -> departmentId == null || e.getDepartmentId() == departmentId)
                 .collect(groupingBy(Employee::getDepartmentId, toList()));
     }
+
     public double getSumSalaryByDep(Integer departmentId) {
         return employeeService.getAll().stream()
                 .filter(e -> departmentId == null || e.getDepartmentId() == departmentId)
