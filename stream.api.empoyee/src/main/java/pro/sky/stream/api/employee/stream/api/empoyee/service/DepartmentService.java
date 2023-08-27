@@ -29,18 +29,19 @@ public class DepartmentService {
                 .orElseThrow(() -> new EmployeeNotFoundException("Сотрудник с максимальной зарплатой не найден"));*/
         Double max = employeeService.getAll().stream()
                 .filter(employee -> employee.getDepartmentId() == departmentId)
-                .map(x -> x.getSalary())
+                .map(Employee::getSalary)
                 .mapToDouble(Double::doubleValue).max().getAsDouble();
         return max;
     }
 
-    public Employee getEmployeeWithMinSalary(Integer departmentId) {
-        return employeeService.getAll().stream()
-                .filter(employee -> employee.getDepartmentId() == departmentId)
-                .min(Comparator.comparing(Employee::getSalary))
-                .orElseThrow(() -> new EmployeeNotFoundException("Сотрудник с минимальной зарплатой не найден"));
-    }
+    public Double getEmployeeWithMinSalary(Integer departmentId) {
 
+        Double min = employeeService.getAll().stream()
+                .filter(employee -> employee.getDepartmentId() == departmentId)
+                .map(Employee::getSalary)
+                .mapToDouble(Double::doubleValue).min().getAsDouble();
+        return min;
+    }
     public Map<Integer, List<Employee>> getEmployeesByDepartment(Integer departmentId) {
         return employeeService.getAll().stream()
                 .filter(e -> departmentId == null || e.getDepartmentId() == departmentId)
