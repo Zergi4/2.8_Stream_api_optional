@@ -38,7 +38,11 @@ public class DepartmentController {
         return departmentService.getEmployeesByDepartment(departmentId);
     }
     @GetMapping("/{id}/employees")
-    public Map<Integer, List<Employee>> getEmployeesByDepartment(@PathVariable int id) {
+    public Map<Integer, List<Employee>> getEmployeesByDepartment(@PathVariable Integer id) {
         return departmentService.getEmployeesByDepartment(id);
+    }
+    @GetMapping("/{id}/salary/sum")
+    public Double getSumSalaryByDep(@PathVariable Integer id) {
+        return departmentService.getSumSalaryByDep(id);
     }
 }

@@ -7,6 +7,7 @@ import pro.sky.stream.api.employee.stream.api.empoyee.Exception.EmployeeNotFound
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -39,5 +40,11 @@ public class DepartmentService {
         return employeeService.getAll().stream()
                 .filter(e -> departmentId == null || e.getDepartmentId() == departmentId)
                 .collect(groupingBy(Employee::getDepartmentId, toList()));
+    }
+    public double getSumSalaryByDep(Integer departmentId) {
+        return employeeService.getAll().stream()
+                .filter(e -> departmentId == null || e.getDepartmentId() == departmentId)
+                .map(x -> x.getSalary())
+                .collect(Collectors.summingDouble(Double::doubleValue));
     }
 }
