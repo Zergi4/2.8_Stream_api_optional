@@ -34,7 +34,11 @@ public class DepartmentController {
     }
 
     @GetMapping("/all")
-    public Map<Integer, List<Employee>> getEmployeesByDepartment(@RequestParam(required = false) Integer departmentId) {
+    public Map<Integer, List<Employee>> getEmployees(@RequestParam(required = false) Integer departmentId) {
         return departmentService.getEmployeesByDepartment(departmentId);
+    }
+    @GetMapping("/{id}/employees")
+    public Map<Integer, List<Employee>> getEmployeesByDepartment(@PathVariable int id) {
+        return departmentService.getEmployeesByDepartment(id);
     }
 }
