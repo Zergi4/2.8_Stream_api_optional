@@ -1,9 +1,74 @@
 package pro.sky.stream.api.employee.stream.api.empoyee.service;
 
-public interface EmployeeService {
-    String findEmployee(String firstName, String lastName);
+import org.springframework.stereotype.Service;
+import pro.sky.stream.api.employee.stream.api.empoyee.Employee;
+import pro.sky.stream.api.employee.stream.api.empoyee.Exception.EmployeeAlreadyAddedException;
+import pro.sky.stream.api.employee.stream.api.empoyee.Exception.EmployeeNotFoundException;
 
-    String deleteEmployee(String firstName, String lastName);
-    String addEmployee(String firstName, String lastName,int department,float salary);
-    String printEmployeeList();
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class EmployeeService {
+
+    private final List<Employee> employees = new ArrayList<>();
+
+    private final static int MAX_SIZE = 10;
+    public EmployeeService() {
+        employees.add(new Employee("Иван", "Иванов", 1000.0, 1));
+        employees.add(new Employee("Иван1", "Иванов1", 999.9, 1));
+        employees.add(new Employee("Иван2", "Иванов2", 8.50, 1));
+
+        employees.add(new Employee("Пётр", "Петров", 8.50, 2));
+
+        employees.add(new Employee("Илья", "Ильин", 777.50, 3));
+        employees.add(new Employee("Илья1", "Ильин1", 88.8, 3));
+    }
+
+
+    public Employee add(String firstName, String lastName, double salary, int departmentId) {
+
+        if (employees.size() >= MAX_SIZE) {
+            throw new EmployeeStorageIsFullException("Массив сотрудников переполнен");
+        }
+
+        Employee newEmployee = new Employee(firstName, lastName, salary, departmentId);
+
+        if (employees.contains(newEmployee)) {
+            throw new EmployeeAlreadyAddedException("Такой сотрудник уже есть");
+        }
+
+        employees.add(newEmployee);
+        return newEmployee;
+    }
+
+    public Employee find(String firstName, String lastName, double salary, int departmentId) {
+        Employee employeeForFound = new Employee(firstName, lastName, salary, departmentId);
+        for (Employee e : employees) {
+            if (e.equals(employeeForFound)) {
+                return e;
+            }
+        }
+
+        throw new EmployeeNotFoundException("Такого сотрудника нет");
+    }
+
+    public Employee remove(String firstName, String lastName, double salary, int departmentId) {
+        Employee employeeForRemove = new Employee(firstName, lastName, salary, departmentId);
+
+        boolean removeResult = employees.remove(employeeForRemove);
+        if (removeResult) {
+            return employeeForRemove;
+        } else {
+            throw new EmployeeNotFoundException("Сотрудник не удален - не был найден в базе");
+        }
+    }
+
+    public List<Employee> getAll() {
+        return employees;
+    }
 }
